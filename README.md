@@ -1,4 +1,4 @@
-# Deploy Traefik, Portainer, Postgres & pgadmin with Docker using LetsEncrypt fo manage certificates.
+# Deploy Traefik, Portainer, Postgres & pgadmin with Docker using LetsEncrypt to manage certificates.
 
 [Postgres for Docker](https://github.com/docker-library/docs/blob/master/postgres/README.md)
 
