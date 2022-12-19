@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+
+  database:
+    image: "postgres:latest"
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      PGDATA: /var/lib/pg_data
+    networks:
+      - proxy
+    volumes:
+      - /home/postgres/db-data/:/var/lib/pg_data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    env_file:
+      - .env
+    environment:
+      SESSION_DB_PATH: /var/lib/pg_admin
+    depends_on:
+      - database
+    networks:
+      - proxy
+    volumes:
+      - /home/postgres/pgadmin-data/:/var/lib/pg_admin
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.pgadmin-secure.entrypoints=websecure"
+      - "traefik.http.routers.pgadmin-secure.rule=Host(`pgadmin.halia.ca`)"
+
+networks:
+  proxy:
+    external: true
