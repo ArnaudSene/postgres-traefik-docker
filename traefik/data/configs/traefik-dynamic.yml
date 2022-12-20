@@ -11,8 +11,7 @@ http:
 
     user-auth:
       basicAuth:
-        users:
-          - "encrypted password with htpasswd for example"
+        usersfile: ./users_file
 
 tls:
   options:

@@ -1,0 +1,3 @@
+CERT_EMAIL="email@domain_name"
+TRAEFIK_HOST="traefik.domain_name"
+PORTAINER_HOST="portainer.domain_name"
