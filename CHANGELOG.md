@@ -1,3 +1,8 @@
+0.2.1
+
+fix: update readme
+
+---
 0.2.0
 
 feat: Use environment variable 
