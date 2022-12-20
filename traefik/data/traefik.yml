@@ -27,6 +27,6 @@ providers:
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: email@domain-nane.com
+      email: ${CERT_EMAIL}
       storage: acme.json
       tlsChallenge: {}

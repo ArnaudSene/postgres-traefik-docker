@@ -2,7 +2,7 @@ version: "3"
 
 services:
 
-  database:
+  postgres:
     image: "postgres:latest"
     container_name: postgres
     restart: always
@@ -26,7 +26,7 @@ services:
     environment:
       SESSION_DB_PATH: /var/lib/pg_admin
     depends_on:
-      - database
+      - postgres
     networks:
       - proxy
     volumes:
@@ -36,7 +36,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
       - "traefik.http.routers.pgadmin-secure.entrypoints=websecure"
-      - "traefik.http.routers.pgadmin-secure.rule=Host(`pgadmin.halia.ca`)"
+      - "traefik.http.routers.pgadmin-secure.rule=Host(`${PGADMIN_HOST}`)"
 
 networks:
   proxy:

@@ -1,24 +1,23 @@
 # Deploy Traefik, Portainer, Postgres & pgadmin with Docker using LetsEncrypt to manage certificates.
 
-[Postgres for Docker](https://github.com/docker-library/docs/blob/master/postgres/README.md)
+
 
 
 In this guide we will 
 
-- deploy Traefik as a reverse proxy for Docker
-- deploy Postgres & pgadmin for Docker
-- deploy portainer for Docker
-- run all containers on a Linux Ubuntu 20.xx hosted on Digital Ocean
-- use LetsEncrypt for certification
+- deploy [Traefik](https://traefik.io/traefik/) as a reverse proxy for Docker
+- deploy [Postgres](https://github.com/docker-library/docs/blob/master/postgres/README.md) & pgadmin for Docker
+- deploy [portainer](https://docs.portainer.io/) for Docker (manage containers in Docker)
+- run all containers on a Linux Ubuntu 20.xx hosted
+- use [LetsEncrypt](https://letsencrypt.org/) for certification
 
 > **Required**: 
 > 
 > You have 3 domain names configured, e.g:
 >
-> - traefik.halila.ca
-> - pgadmin.halia.ca
-> - portainer.halia.ca
-    {.is-warning}
+> - traefik.domain-name.com
+> - pgadmin.domain-name.com
+> - portainer.domain-name.com
 
 
 ## Quick Install
@@ -30,47 +29,106 @@ git clone https://gitlab.com/ArnaudSene/postgres-traefik-docker.git
 cd postgres-traefik-docker
 ```
 
-### 2. Edit the Postgres required file: `.env`:
+### 2. Postgres & pgadmin configuration
+go to `./postgres-traefik-docker/apps/postgres`
 
 ```shell
-cp env-custom apps/postgres/.env
-vi apps/postgres/.env
+cp env-custom .env
+vi .env
 ```
+
+Replace values between <> with your data. 
 
 ```dotenv
 POSTGRES_USER=postgres
-POSTGRES_PASSWORD="pg password"
-POSTGRES_DB="database name"
-PGADMIN_DEFAULT_EMAIL="a valid email"
-PGADMIN_DEFAULT_PASSWORD="pgadmin password"
+POSTGRES_PASSWORD=<password>
+POSTGRES_DB=<db_name>
+PGADMIN_DEFAULT_EMAIL=<email>
+PGADMIN_DEFAULT_PASSWORD=<pg_password>
+PGADMIN_HOST=pgadmin.<domain_name>
 ```
 
 ### 3. Traefik configuration
+go to `./postgres-traefik-docker/traefik`
 
-1. set 600 permission on file `traefik/data/acme.json`
-2. update `traefik/docker-compose.yml` file
-   - replace `traefik.domain-nane.com` with your domain name
-   - replace `portainer.domain-nane.com` with your domain name
-3. update `traefik/data/traefik.yml` file
-   - replace `email@domain-nane.com` with your email address
-4. update `traefik/data/configs/traefik-dynamic.yml` file
-   - create an encrypted password (e.g: use *htpassword*)
-   - replace `"encrypted password with htpasswd for example"` with your encrypted password
+```shell
+cp env-custom .env
+vi .env
+```
 
-### 4. Start containers
+Replace values between <> with your data.
+
+```dotenv
+CERT_EMAIL=<email@domain_name>
+TRAEFIK_HOST=traefik.<domain_name>
+PORTAINER_HOST=portainer.<domain_name>
+```
+
+### 4. Create an encrypted password (Traefik dashboard) 
+go to `./postgres-traefik-docker/traefik`
+
+- Install htpasswd tool
+ 
+```shell
+sudo apt-get update
+sudo apt-get install apache2-utils
+```
+
+- Save the encrypted password into `traefik/users_file` (htpasswd)
+```shell
+htpasswd -nb admin your_password > users_file
+```
+
+- set 600 permission on file `traefik/users_file`
+```shell
+sudo chmod 600 users_file
+```
+
+### 5. set 600 permission on file `traefik/data/acme.json`
+go to `./postgres-traefik-docker/traefik/data`
+
+```shell
+sudo chmod 600 acme.json
+```
+
+### 6. Start containers
 
 Start Traefik reverse proxy
 
+go to `./postgres-traefik-docker/traefik`
+
 ```shell
-cd traefik
-docker compose up -d
+chmod u+x start.sh
+chmod u+x stop.sh
+./start.sh
 ```
 
 Start Postgres & pgadmin
 
+go to `./postgres-traefik-docker/apps/postgres`
+
 ```shell
-cd apps/postgres
-bash start.sh
+chmod u+x start.sh
+chmod u+x stop.sh
+./start.sh
+```
+
+### 7. Stop containers
+
+Stop Traefik reverse proxy
+
+go to `./postgres-traefik-docker/traefik`
+
+```shell
+./stop.sh
+```
+
+Start Postgres & pgadmin
+
+go to `./postgres-traefik-docker/apps/postgres`
+
+```shell
+./stop.sh
 ```
 
 ---
@@ -78,12 +136,12 @@ bash start.sh
 ## Access web apps
 
 ### 1. Traefik dashboard
-Protect with `basicAuth`. Use your encrypted password to sign in.
+Protected with `basicAuth`. Use your encrypted password to log in.
 
 https://traefik.your-domain-name.com
 
 ### 2. Portainer apps
-Create a user and password
+Create a user and password first then log in.
 
 https://portainer.your-domain-name.com
 
