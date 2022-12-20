@@ -1,14 +1,11 @@
 # Deploy Traefik, Portainer, Postgres & pgadmin with Docker using LetsEncrypt to manage certificates.
 
-
-
-
 In this guide we will 
 
 - deploy [Traefik](https://traefik.io/traefik/) as a reverse proxy for Docker
 - deploy [Postgres](https://github.com/docker-library/docs/blob/master/postgres/README.md) & pgadmin for Docker
 - deploy [portainer](https://docs.portainer.io/) for Docker (manage containers in Docker)
-- run all containers on a Linux Ubuntu 20.xx hosted
+- run all containers on a Linux Ubuntu 20.xx
 - use [LetsEncrypt](https://letsencrypt.org/) for certification
 
 > **Required**: 
